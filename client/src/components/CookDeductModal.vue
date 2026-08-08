@@ -1,7 +1,7 @@
 <template>
   <div class="overlay" @click.self="$emit('close')">
     <div class="modal">
-      <div class="panel-title">🍳 Log Cook — Deduct Ingredients</div>
+      <div class="panel-title">Log Cook — Deduct Ingredients</div>
       <div class="modal-note">Adjust quantities actually used. Click USE ALL to use the full required amount.</div>
       <div class="modal-scroll">
         <div class="deduct-row" v-for="ing in deductions" :key="ing.ingredient_id">
@@ -66,10 +66,10 @@ async function confirm() {
 .deduct-name { color: var(--text-bright); font-weight: 600; font-size: 0.88rem; margin-bottom: 6px; }
 .deduct-controls { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
 .deduct-label { color: var(--text-dim); font-size: 0.78rem; }
-.qty-input { background: #111; border: 1px solid var(--border-dim); box-shadow: inset 1px 1px 0 rgba(0,0,0,0.4); color: var(--text); font-family: inherit; font-size: 0.88rem; padding: 5px 8px; width: 76px; }
+.qty-input { background: var(--bg-mid); border: 1px solid var(--border-dim); box-shadow: inset 1px 1px 0 rgba(0,0,0,0.4); color: var(--text); font-family: inherit; font-size: 0.88rem; padding: 5px 8px; width: 76px; }
 .qty-unit { color: var(--text-dim); font-size: 0.78rem; }
 .use-all { margin-left: auto; background: var(--panel-alt); border: 1px solid var(--border-dim); box-shadow: var(--bevel-hi), var(--bevel-lo); color: var(--text-dim); font-family: inherit; font-size: 0.68rem; text-transform: uppercase; padding: 3px 8px; cursor: pointer; }
-.use-all:hover { background: #2e2e2e; color: var(--text); border-color: var(--border); }
+.use-all:hover { background: var(--panel-alt); color: var(--text); border-color: var(--border); }
 .deduct-stock { color: var(--text-faint); font-size: 0.72rem; }
 .modal-footer { padding: 10px 14px; background: var(--header-mid); border-top: 1px solid var(--border-dim); display: flex; gap: 6px; justify-content: flex-end; }
 
