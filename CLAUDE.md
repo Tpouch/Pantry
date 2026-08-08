@@ -1,87 +1,127 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This document defines the development rules for this project. It applies to all code generated or modified by Claude. Stack: Node.js + Express + SQLite (better-sqlite3) on the backend, Vue 3 + Vue Router + Vite on the frontend.
 
-## Git commits
+Important specific context: this project uses a **single shared password** (no user accounts, no per-identity sessions) to protect access, and it is **publicly exposed on the internet**. The security rules below are written for this exact model, not for a classic multi-user system. Do not add RBAC, multi-user JWT, or account management without an explicit request: that would be unjustified complexity (a KISS violation).
 
-Do not add a "Co-Authored-By" or any footer to commit messages.
+---
 
-## Commands
+## 1. Cross-cutting principles (SOLID + KISS)
 
-```bash
-# Development (Express on :3000, Vite on :5173 with /api proxy)
-npm run dev
+These principles apply to both the backend and the frontend.
 
-# Run all backend tests
-npm test
+### KISS (default priority on this project)
 
-# Run a single test file
-cd server && npm test -- --testPathPattern=ingredients
-cd server && npm test -- --testPathPattern=recipes
-cd server && npm test -- --testPathPattern=cookLog
+- No anticipated abstraction for a need that doesn't exist yet. A single route that does one thing stays a simple function, not a Repository pattern.
+- No extra layer (service layer, DTO, mapper) unless the business logic genuinely justifies it.
+- On this specific project (personal, side project, single secret), KISS wins over SOLID when they conflict. SOLID remains the reference for structuring code, but should never add complexity to a simple module just to "look clean."
 
-# Production build (compiles Vue into server/public/)
-npm run build
+### SOLID, applied with judgment
 
-# Start production server (serves API + built frontend on :3000)
-NODE_ENV=production npm start
-```
+- **S (Single Responsibility)**: each Express module (route, middleware, DB access) has one reason to change. A route handler should not mix raw SQL logic with validation and response formatting: split at minimum into route / logic / data access once the handler exceeds ~20 lines.
+- **O (Open/Closed)**: prefer composing Express middlewares over modifying existing ones to add behavior.
+- **L (Liskov)**: not very relevant in JS/Vue without a strong class hierarchy, don't force this principle artificially.
+- **I (Interface Segregation)**: on the Vue side, a component should only receive the props it actually needs, never a full object "just in case."
+- **D (Dependency Inversion)**: SQLite access must be isolated in a dedicated module (e.g. `db/`), never instantiated directly inside routes. This makes it easy to mock in tests and to swap the implementation without touching routes.
 
-## Architecture
+---
 
-This is a monorepo with two packages that run as one process in production.
+## 2. Backend: Node.js + Express + better-sqlite3
 
-**server/** — Node.js + Express + better-sqlite3  
-**client/** — Vue 3 + Vue Router + Vite
+### Structure
 
-In dev, Vite (`localhost:5173`) proxies `/api/*` to Express (`localhost:3000`). In production, `npm run build` compiles the frontend into `server/public/` and Express serves it as static files — one port, one process.
+- Split into `routes/`, `db/` (or `repositories/`), `middlewares/`, `config/`. No single `index.js` file doing everything beyond a quick prototype.
+- `better-sqlite3` is synchronous: never wrap it artificially in unnecessary Promises, that adds complexity with no real benefit (KISS violation). The synchronous API is a deliberate choice of the library, not a problem to fix.
+- A single DB connection file, exported and reused (simple singleton pattern), never a new connection per request.
 
-### Backend layers (routes → controllers → services → repositories)
+### SQL queries
 
-Each domain (ingredients, recipes, cookLog, dashboard) has its own file at each layer:
+- **Always** use parameterized prepared statements (`db.prepare(...).run(...)` / `.get(...)` / `.all(...)`). Never concatenate strings into a SQL query, even for a value that seems "safe" (e.g. a numeric ID). This is the single most important rule in this whole document: one exception anywhere in the code is enough to make the app vulnerable to SQL injection.
+- Enable `PRAGMA foreign_keys = ON` at startup if the schema uses foreign keys.
+- Never trust a value coming from the frontend (query params, body, headers) without prior validation, even internally.
 
-- **routes/** — Express routers, maps HTTP verbs to controller functions
-- **controllers/** — thin HTTP layer, calls service, maps thrown errors to status codes
-- **services/** — business logic and validation; throws `Error` on failure
-- **repositories/** — all SQL via better-sqlite3; never called directly from controllers
+### Input validation
 
-`server/db.js` exports a singleton better-sqlite3 instance. It runs `CREATE TABLE IF NOT EXISTS` on require, so importing it initializes the schema automatically.
+- Systematically validate `req.body`, `req.params`, `req.query` before using them, with a schema library (`zod` recommended, lightweight and TypeScript-friendly) rather than scattered manual `if` checks.
+- Explicitly reject (400) any request that doesn't match the expected schema, never silently "fix" a malformed input.
 
-`recipes.steps` is stored as a JSON string in SQLite. Every repository function that reads recipes calls `JSON.parse(r.steps)` before returning.
+### Error handling
 
-### Key business logic
+- Centralized Express error middleware (the last `app.use((err, req, res, next) => ...)`), no duplicated error handling in every route.
+- Never return the raw stack trace or error message to the client in production. Log server-side, return a generic message client-side.
+- Distinguish expected errors (validation, 404) from unexpected ones (bugs, 500) in logging.
 
-- **Stock check** — `recipesService.checkStock(id)` joins `recipe_ingredients` with `ingredients`, compares required qty vs current qty. Returns `canCook` (boolean) and `missingCount`. `GET /api/recipes` includes these fields on every recipe. `GET /api/recipes/:id` additionally returns per-ingredient `hasEnough` and full stock details.
-- **Cook deduction** — `POST /api/cook-log` accepts `{ recipeId, cookedAt, deductions: [{ ingredientId, quantityUsed }] }`. The service logs the entry then calls `ingredientsService.applyDeductions()` which runs `UPDATE ingredients SET quantity = MAX(0, quantity - ?)` per deduction. No deduction history is stored.
-- **Dashboard** — `GET /api/dashboard` aggregates recent ingredients, expiring ingredients (within 14 days), recent recipes (merged from cook log + recently created), and stats. Computed fresh on each request.
+---
 
-### Frontend
+## 3. Frontend: Vue 3 + Vue Router + Vite
 
-`client/src/api.js` is the single API client — a thin `fetch` wrapper. All components import from it as `import { api } from '../api'`. Never use raw `fetch` in components.
+### Structure and style
 
-#### Component discipline
+- Composition API with `<script setup>` by default, no Options API unless there's a specific need.
+- Strongly favor small, single-purpose components over large multi-concern ones. Each component should do one clear thing: displaying a list item, a form field, a modal, a status badge, etc. If a component starts handling more than one distinct UI responsibility (e.g. rendering data AND managing a form AND handling a modal), split it into smaller components rather than growing it. This is a deliberate project-wide preference, not just a size threshold: prefer composing several small components even when a single larger one would technically still be "readable."
+- As a rough guardrail, if a component exceeds ~150-200 lines or mixes several distinct UI concerns, split it. But the target is single responsibility per component, not just line count. A 40-line component doing three unrelated things should still be split.
+- Reusable logic (fetching, formatting, shared state) extracted into composables (`useXxx.js`), never duplicated across components.
+- Explicitly typed props (with TypeScript if the project uses it, otherwise `props: { x: { type: String, required: true } }`), never implicit undeclared props.
 
-Views in `client/src/views/` must stay thin. Any self-contained piece of UI — a modal, a form, a list row, a reusable display element — goes in `client/src/components/` instead of being inlined in the view. Concretely:
+### Communication with the backend
 
-- **Modals** are always their own component (`XxxModal.vue`), never an inline `<div class="overlay">` inside a view.
-- **Repeated UI patterns** (a table row type, a card, a badge variant, a form field widget) are extracted as components once they appear in more than one place.
-- **Complex form sub-sections** (e.g. an ingredient editor list, a step editor list) are components even when used in a single view, if they own non-trivial state or logic.
+- Centralize HTTP calls in a dedicated module (e.g. `api/client.js`), no `fetch` or `axios` scattered across components. This keeps headers, timeouts, and network error handling in one place.
+- Never trust data received from the API without treating it as potentially hostile before injecting it into the DOM (see XSS section below).
 
-A view should ideally contain only layout, data-fetching, and wiring between components.
+### Routing
 
-`client/src/styles/theme.css` defines all CSS variables. The design is Factorio-inspired dark grey:
+- Vue Router: any route that must be protected by the shared password should check auth state via a global `beforeEach` guard, not a repeated check in every view component.
 
-- `--accent: #e0a020` (orange) is used **only** for the active nav tab underline and the step progress bar fill — not as a general highlight color
-- `--green: #5ab830` / `--red: #c83020` for stock/expiry status
-- Panels and buttons get the embossed look via `box-shadow: var(--bevel-hi), var(--bevel-lo)`
-- Body has a subtle horizontal scanline texture via `repeating-linear-gradient`
+---
 
-The router uses hash history (`createWebHashHistory`), so URLs are `/#/ingredients`, `/#/recipes/:id`, etc.
+## 4. Cybersecurity, priority on this project given the context (single secret + public exposure)
 
-### Data persistence
+### 4.1 Protecting the shared password (mandatory rule, not optional)
 
-All state must be persisted server-side in SQLite. Never use localStorage or any client-side storage for application data.
+The password must never be stored or compared in plain text, even in `.env`. This is the single most critical point of this project given its public exposure.
 
-### Tests
+- Store only a **hash** of the password (argon2id recommended, otherwise bcrypt with a minimum cost of 12), never the plain value, even as an environment variable.
+- Compare using a **constant-time** comparison function provided by the hashing library itself (e.g. `argon2.verify()`), never `===` or a plain string comparison, which exposes a timing attack.
+- The hash itself stays in an environment variable or config file outside the Git repo, never hardcoded in the codebase.
+- Add **strict rate limiting** on the password verification endpoint (e.g. `express-rate-limit`), typically a few attempts per minute per IP. Without this, a single password exposed publicly can be brute-forced continuously.
+- Consider a small artificial delay or progressive lockout after several failed attempts, in addition to network-level rate limiting.
 
-Tests in `server/__tests__/` use Jest + Supertest against the real SQLite database (not mocked). Each `beforeEach` deletes rows in FK dependency order. Running tests mutates `server/pantry.db`.
+### 4.2 Session / access after authentication
+
+- Once the password is validated, use an `httpOnly`, `secure`, `sameSite: strict` (or at minimum `lax`) session cookie, not a token stored in `localStorage` (vulnerable to XSS, unlike an httpOnly cookie).
+- Reasonable session expiration, no infinite session.
+- The session signing secret must be long, randomly generated, stored as an environment variable, never hardcoded.
+
+### 4.3 Headers and transport
+
+- HTTPS mandatory in production (via reverse proxy, consistent with a typical Nginx Proxy Manager setup).
+- Use `helmet` on Express for baseline security headers (CSP, HSTS, X-Content-Type-Options, etc.) rather than configuring them manually one by one.
+- CORS configured explicitly with an origin whitelist, never `origin: '*'` if the API serves an authenticated frontend.
+
+### 4.4 Injections and validation
+
+- SQL injection: covered in section 2, this is the non-negotiable rule.
+- XSS: Vue escapes content by default via `{{ }}`, but any use of `v-html` must be justified and the value passed must be sanitized (`DOMPurify`) if it comes from an external or user-provided source.
+- Strict input validation on the backend (see section 2), even if the frontend already validates: the frontend is never a reliable security boundary, it can always be bypassed by calling the API directly.
+
+### 4.5 Dependencies and attack surface
+
+- Regular `npm audit`, fix critical/high vulnerabilities promptly.
+- Keep the number of dependencies limited, every added package is an additional attack surface (consistent with KISS).
+- Never expose a debug, introspection, or API documentation route (Swagger, etc.) in production without protection.
+
+### 4.6 Secrets and configuration
+
+- No secret (password hash, session signing key, third-party API key) ever committed to Git, including in history. Use `.env` + `.gitignore`, and check that no secret was accidentally committed before any public push.
+- Environment variables validated at app startup (explicit failure if a required variable is missing), rather than a silent crash or a dangerous default behavior later.
+
+---
+
+## 5. What Claude must systematically check before proposing code on this project
+
+1. Is every SQL query parameterized?
+2. Is every user input (body, params, query) validated before use?
+3. Is the password treated as a hashed secret, never in plain text, with constant-time comparison?
+4. Is there a risk of timing attack, XSS via `v-html`, or a secret exposed on the frontend?
+5. Is the added complexity justified by a real project need, or is it unnecessary anticipation (KISS)?
+6. On the frontend, is each component doing exactly one thing, or should it be split into smaller single-purpose components?
