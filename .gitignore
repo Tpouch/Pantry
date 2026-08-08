@@ -1,6 +1,6 @@
-server/letmecook.db
-server/letmecook.db-shm
-server/letmecook.db-wal
+server/pantry.db
+server/pantry.db-shm
+server/pantry.db-wal
 node_modules/
 server/node_modules/
 client/node_modules/

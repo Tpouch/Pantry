@@ -4,7 +4,7 @@
   </div>
   <div v-else id="layout">
     <nav class="toolbar">
-      <div class="toolbar-logo">LetMeCook</div>
+      <div class="toolbar-logo">Pantry</div>
       <router-link to="/" class="btn btn-sm desktop-nav" :class="{ 'btn-active': $route.path === '/' }">⌂ Dashboard</router-link>
       <router-link to="/ingredients" class="btn btn-sm desktop-nav" :class="{ 'btn-active': $route.path === '/ingredients' }">⬡ Ingredients</router-link>
       <router-link to="/recipes" class="btn btn-sm desktop-nav" :class="{ 'btn-active': $route.path.startsWith('/recipes') }">⚙ Recipes</router-link>

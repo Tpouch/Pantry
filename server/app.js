@@ -15,7 +15,7 @@ app.use(express.json())
 
 // Session middleware
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'letmecook-secret',
+  secret: process.env.SESSION_SECRET || 'pantry-secret',
   resave: false,
   saveUninitialized: true,
   cookie: {

@@ -1,4 +1,4 @@
-# LetMeCook
+# Pantry
 
 A personal recipe and ingredient management app with a Factorio-inspired UI.
 

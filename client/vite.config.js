@@ -9,8 +9,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['apple-touch-icon.png'],
       manifest: {
-        name: 'LetMeCook',
-        short_name: 'LetMeCook',
+        name: 'Pantry',
+        short_name: 'Pantry',
         description: 'Kitchen ingredient and recipe manager',
         theme_color: '#363636',
         background_color: '#111111',

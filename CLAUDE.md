@@ -84,4 +84,4 @@ All state must be persisted server-side in SQLite. Never use localStorage or any
 
 ### Tests
 
-Tests in `server/__tests__/` use Jest + Supertest against the real SQLite database (not mocked). Each `beforeEach` deletes rows in FK dependency order. Running tests mutates `server/letmecook.db`.
+Tests in `server/__tests__/` use Jest + Supertest against the real SQLite database (not mocked). Each `beforeEach` deletes rows in FK dependency order. Running tests mutates `server/pantry.db`.
