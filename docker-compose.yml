@@ -3,6 +3,16 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    develop:
+      watch:
+        - action: rebuild
+          path: ./server
+        - action: rebuild
+          path: ./client
+        - action: rebuild
+          path: ./package.json
+        - action: rebuild
+          path: ./Dockerfile
     ports:
       - "3004:3000"
     environment:
