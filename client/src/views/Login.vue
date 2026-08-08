@@ -1,19 +1,21 @@
 <template>
-  <div class="login-container">
-    <div class="login-panel">
-      <h1>Let Me Cook</h1>
+  <div class="login-stage">
+    <div class="login-card label-card">
+      <h1 class="login-title">Pantry</h1>
+      <p class="login-sub">Enter to see what's in stock</p>
       <form @submit.prevent="login">
         <input
           v-model="password"
           type="password"
-          placeholder="Enter password"
+          placeholder="Password"
+          class="login-input"
           autofocus
         />
-        <button type="submit" :disabled="loading">
-          {{ loading ? 'Logging in...' : 'Login' }}
+        <button type="submit" class="login-btn" :disabled="loading">
+          {{ loading ? 'Logging in…' : 'Login' }}
         </button>
       </form>
-      <p v-if="error" class="error">{{ error }}</p>
+      <p v-if="error" class="login-error">{{ error }}</p>
     </div>
   </div>
 </template>
@@ -51,75 +53,74 @@ export default {
 </script>
 
 <style scoped>
-.login-container {
+.login-stage {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  background: var(--bg);
+  background-image: radial-gradient(rgba(0,0,0,0.14) 1px, transparent 1px);
+  background-size: 7px 7px;
 }
 
-.login-panel {
-  background: #2a2a2a;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+.login-card {
   width: 100%;
   max-width: 300px;
+  padding: 32px 28px 28px;
 }
 
-.login-panel h1 {
+.login-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 1.6rem;
   text-align: center;
-  color: var(--accent);
-  margin-bottom: 2rem;
-  font-size: 1.5rem;
+  margin-bottom: 4px;
 }
 
-.login-panel form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.login-sub {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-faint);
+  text-align: center;
+  margin-bottom: 22px;
 }
 
-.login-panel input {
-  padding: 0.75rem;
-  border: 1px solid var(--accent);
-  background: #1a1a1a;
-  color: #fff;
-  border-radius: 4px;
-  font-size: 1rem;
+.login-card form { display: flex; flex-direction: column; gap: 12px; }
+
+.login-input {
+  padding: 10px 12px;
+  border: 1px solid var(--label-tab);
+  background: #fbf6ea;
+  color: var(--ink);
+  font-family: 'Karla', sans-serif;
+  font-size: 0.95rem;
+  border-radius: 1px;
+}
+.login-input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
 }
 
-.login-panel input:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(224, 160, 32, 0.1);
-}
-
-.login-panel button {
-  padding: 0.75rem;
+.login-btn {
+  padding: 10px;
   background: var(--accent);
-  color: #1a1a1a;
+  color: var(--ink);
   border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  font-weight: bold;
+  font-family: 'Karla', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
   cursor: pointer;
-  transition: background 0.2s;
+  border-radius: 1px;
 }
+.login-btn:hover:not(:disabled) { background: #d19a3c; }
+.login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-.login-panel button:hover:not(:disabled) {
-  background: #f0b030;
-}
-
-.login-panel button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.error {
-  color: var(--red);
+.login-error {
+  color: var(--red-on-label);
   text-align: center;
-  margin-top: 1rem;
+  margin-top: 14px;
+  font-size: 0.85rem;
 }
 </style>
