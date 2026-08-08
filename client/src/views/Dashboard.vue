@@ -106,7 +106,7 @@ function timeAgo(dateStr) {
 .dashboard { padding: 10px; display: flex; flex-direction: column; gap: 8px; height: 100%; overflow-y: auto; }
 .stat-row { display: flex; margin: 0 -6px; }
 .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.panel-note { font-family: 'Share Tech Mono', monospace; font-size: 0.68rem; color: var(--text-faint); letter-spacing: 1px; }
+.panel-note { font-family: 'Special Elite', monospace; font-size: 0.68rem; color: var(--text-faint); letter-spacing: 1px; }
 .recipes-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--border-dim); padding: 1px; }
 .loading-state { padding: 2rem; color: var(--text-faint); font-family: 'Special Elite', monospace; font-size: 0.85rem; }
 
