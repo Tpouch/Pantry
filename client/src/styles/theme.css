@@ -25,9 +25,9 @@
   --green-border: #4f6b28;
   --red-bg: #2a1510;
   --red-border: #7a2e21;
-  --yellow: #c08a2e;
-  --yellow-bg: #2a2011;
-  --yellow-border: #8a6522;
+  --yellow: #b8752f;
+  --yellow-bg: #2a1c0f;
+  --yellow-border: #7a4a1e;
   --border-dark: #4a3c2e;
   --accent-dark: #8a6522;
   /* Larder additions: the pantry-label surface and its text-safe status colors */
@@ -36,6 +36,7 @@
   --ink: #2a2119;
   --green-on-label: #4f6b28;
   --red-on-label: #7a2e21;
+  --text-faint-on-label: #6a5a3e;
   --label-input: #fbf6ea;
   --accent-hover: #d19a3c;
 }
@@ -96,6 +97,7 @@ body {
   background: var(--header-mid);
   border-bottom: 1px solid var(--border-dim);
   padding: 6px 12px; font-weight: 700; font-size: 0.85rem; color: var(--text-bright);
+  font-family: 'Fraunces', serif;
   display: flex; align-items: center; justify-content: space-between; gap: 8px;
 }
 
@@ -122,6 +124,7 @@ body {
 .section-label {
   padding: 4px 12px; background: var(--panel-alt); border-bottom: 1px dashed var(--border-dim);
   font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint);
+  font-family: 'Special Elite', monospace;
 }
 
 /* Larder signature motif: a piece of data rendered as a label stuck to the page */

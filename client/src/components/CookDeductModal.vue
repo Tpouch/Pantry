@@ -69,7 +69,7 @@ async function confirm() {
 .qty-input { background: var(--bg-mid); border: 1px solid var(--border-dim); box-shadow: inset 1px 1px 0 rgba(0,0,0,0.4); color: var(--text); font-family: inherit; font-size: 0.88rem; padding: 5px 8px; width: 76px; }
 .qty-unit { color: var(--text-dim); font-size: 0.78rem; }
 .use-all { margin-left: auto; background: var(--panel-alt); border: 1px solid var(--border-dim); box-shadow: var(--bevel-hi), var(--bevel-lo); color: var(--text-dim); font-family: inherit; font-size: 0.68rem; text-transform: uppercase; padding: 3px 8px; cursor: pointer; }
-.use-all:hover { background: var(--panel-alt); color: var(--text); border-color: var(--border); }
+.use-all:hover { background: var(--row-hover); color: var(--text); border-color: var(--border); }
 .deduct-stock { color: var(--text-faint); font-size: 0.72rem; }
 .modal-footer { padding: 10px 14px; background: var(--header-mid); border-top: 1px solid var(--border-dim); display: flex; gap: 6px; justify-content: flex-end; }
 

@@ -59,8 +59,6 @@ export default {
   justify-content: center;
   min-height: 100vh;
   background: var(--bg);
-  background-image: radial-gradient(rgba(0,0,0,0.14) 1px, transparent 1px);
-  background-size: 7px 7px;
 }
 
 .login-card {
@@ -82,7 +80,7 @@ export default {
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  color: var(--text-faint);
+  color: var(--text-faint-on-label);
   text-align: center;
   margin-bottom: 22px;
 }

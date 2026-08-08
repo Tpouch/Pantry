@@ -118,6 +118,10 @@ export default {
   color: var(--ink);
   font-weight: 700;
 }
+.toolbar a.tab:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
 .logout-btn {
   margin-left: auto;
   align-self: center;

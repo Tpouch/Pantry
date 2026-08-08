@@ -114,7 +114,7 @@ async function onSaved() {
   color: var(--text-faint); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px;
 }
 .meta-section { padding: 10px 12px; border-bottom: 1px solid var(--border-dim); }
-.recipe-name { font-size: 1.1rem; font-weight: 700; color: var(--text-bright); margin-bottom: 6px; }
+.recipe-name { font-size: 1.1rem; font-weight: 700; color: var(--text-bright); margin-bottom: 6px; font-family: 'Fraunces', serif; }
 .recipe-meta { display: flex; gap: 14px; flex-wrap: wrap; color: var(--text-dim); font-size: 0.78rem; }
 .recipe-meta b { color: var(--text); }
 

@@ -52,7 +52,7 @@ onMounted(async () => {
 .input:focus { outline: none; border-color: var(--border); }
 .picker-list { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
 .picker-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: var(--panel-alt); border: 1px solid var(--border-dim); border-radius: 2px; cursor: pointer; }
-.picker-row:hover { background: var(--panel-alt); border-color: var(--border); }
+.picker-row:hover { background: var(--row-hover); border-color: var(--border); }
 .picker-name { color: var(--text-bright); font-size: 0.88rem; }
 .picker-empty { color: var(--text-muted); font-size: 0.85rem; padding: 8px 0; }
 .modal-footer { padding: 10px 14px; background: var(--header-mid); border-top: 1px solid var(--border-dim); display: flex; gap: 6px; justify-content: flex-end; }

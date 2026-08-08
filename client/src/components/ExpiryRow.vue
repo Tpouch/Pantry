@@ -35,7 +35,7 @@ const countdownClass = computed(() => days.value <= 3 ? 'cd-critical' : days.val
 .countdown { display: flex; flex-direction: column; align-items: center; min-width: 38px; font-family: 'Special Elite', monospace; }
 .cd-num  { font-size: 1.35rem; font-weight: 700; line-height: 1; }
 .cd-unit { font-size: 0.52rem; letter-spacing: 1px; color: var(--text-faint); }
-.cd-critical .cd-num { color: var(--red);    text-shadow: 0 0 8px rgba(200,48,32,0.6); }
+.cd-critical .cd-num { color: var(--red); }
 .cd-warning  .cd-num { color: var(--yellow); }
 .cd-ok       .cd-num { color: var(--green);  }
 </style>
