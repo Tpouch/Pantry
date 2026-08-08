@@ -2,6 +2,11 @@
   "name": "pantry-server",
   "version": "1.0.0",
   "private": true,
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3"
+    ]
+  },
   "scripts": {
     "test": "jest --runInBand"
   },
