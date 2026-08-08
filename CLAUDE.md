@@ -114,7 +114,7 @@ The password must never be stored or compared in plain text, even in `.env`. Thi
 
 ### 4.5 Dependencies and attack surface
 
-- Regular `npm audit`, fix critical/high vulnerabilities promptly.
+- Regular `pnpm audit`, fix critical/high vulnerabilities promptly.
 - Keep the number of dependencies limited, every added package is an additional attack surface (consistent with KISS).
 - Never expose a debug, introspection, or API documentation route (Swagger, etc.) in production without protection.
 
