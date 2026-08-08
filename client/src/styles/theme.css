@@ -36,6 +36,8 @@
   --ink: #2a2119;
   --green-on-label: #4f6b28;
   --red-on-label: #7a2e21;
+  --label-input: #fbf6ea;
+  --accent-hover: #d19a3c;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }

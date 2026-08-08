@@ -92,7 +92,7 @@ export default {
 .login-input {
   padding: 10px 12px;
   border: 1px solid var(--label-tab);
-  background: #fbf6ea;
+  background: var(--label-input);
   color: var(--ink);
   font-family: 'Karla', sans-serif;
   font-size: 0.95rem;
@@ -114,7 +114,7 @@ export default {
   cursor: pointer;
   border-radius: 1px;
 }
-.login-btn:hover:not(:disabled) { background: #d19a3c; }
+.login-btn:hover:not(:disabled) { background: var(--accent-hover); }
 .login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .login-error {
