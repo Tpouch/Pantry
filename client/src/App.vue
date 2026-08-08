@@ -10,7 +10,7 @@
       <router-link to="/recipes" class="tab desktop-nav" :class="{ active: $route.path.startsWith('/recipes') }"><Icon name="book" />Recipes</router-link>
       <router-link to="/cook-log" class="tab desktop-nav" :class="{ active: $route.path === '/cook-log' }"><Icon name="ribbon" />Cook Log</router-link>
       <router-link to="/meal-plan" class="tab desktop-nav" :class="{ active: $route.path === '/meal-plan' }"><Icon name="calendar" />Plan</router-link>
-      <button class="btn btn-sm logout-btn" @click="logout">Log out</button>
+      <button class="btn logout-btn" @click="logout">Log out</button>
     </nav>
     <main class="main-content">
       <router-view />
@@ -95,12 +95,12 @@ export default {
   background: var(--header);
   border-bottom: 2px solid var(--border-dim);
   box-shadow: var(--bevel-hi), var(--bevel-lo), 0 2px 6px rgba(0,0,0,0.5);
-  display: flex; align-items: flex-end; height: 42px; padding: 0 8px; gap: 2px; flex-shrink: 0;
+  display: flex; align-items: flex-end; height: 60px; padding: 0 12px; gap: 3px; flex-shrink: 0;
 }
 .toolbar-logo {
   color: var(--text);
-  font-family: 'Fraunces', serif; font-weight: 700; font-size: 1rem;
-  padding: 0 14px 8px 4px; margin-right: 6px; align-self: center;
+  font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.3rem;
+  padding: 0 16px 10px 4px; margin-right: 8px; align-self: center;
 }
 .toolbar a.tab {
   text-decoration: none;
@@ -108,9 +108,9 @@ export default {
   border: 1px solid var(--border-dim);
   border-bottom: none;
   color: var(--text-dim);
-  font-size: 0.82rem;
-  padding: 8px 14px 7px;
-  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.95rem;
+  padding: 12px 20px 11px;
+  display: inline-flex; align-items: center; gap: 8px;
   clip-path: polygon(0 100%, 0 8px, 8px 0, 100% 0, 100% 100%);
 }
 .toolbar a.tab.active {
