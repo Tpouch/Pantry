@@ -22,6 +22,15 @@ function findRecent(limit = 5) {
   return db.prepare('SELECT * FROM ingredients ORDER BY created_at DESC LIMIT ?').all(limit)
 }
 
+function findNeeded() {
+  return db.prepare(`
+    SELECT i.*, SUM(ri.quantity) as needed, GROUP_CONCAT(DISTINCT ri.unit) as needed_units
+    FROM recipe_ingredients ri
+    JOIN ingredients i ON i.id = ri.ingredient_id
+    GROUP BY i.id
+  `).all()
+}
+
 function create({ name, quantity, unit, expiration_date, category }) {
   const result = db.prepare(`
     INSERT INTO ingredients (name, quantity, unit, expiration_date, category)
@@ -46,4 +55,4 @@ function deductQuantity(id, amount) {
   db.prepare('UPDATE ingredients SET quantity = MAX(0, quantity - ?) WHERE id = ?').run(amount, id)
 }
 
-module.exports = { findAll, findById, findExpiringSoon, findRecent, create, update, remove, deductQuantity }
+module.exports = { findAll, findById, findExpiringSoon, findRecent, findNeeded, create, update, remove, deductQuantity }

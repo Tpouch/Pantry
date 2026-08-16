@@ -24,6 +24,7 @@ export const api = {
   dashboard: { get: () => request('GET', '/dashboard') },
   ingredients: {
     list: () => request('GET', '/ingredients'),
+    needed: () => request('GET', '/ingredients/needed'),
     create: (data) => request('POST', '/ingredients', data),
     update: (id, data) => request('PUT', `/ingredients/${id}`, data),
     remove: (id) => request('DELETE', `/ingredients/${id}`)
