@@ -6,12 +6,12 @@
         Recipe Info
         <div style="display:flex;gap:6px">
           <button class="btn btn-sm" @click="showEdit = true">✎ Edit</button>
-          <button class="btn btn-sm btn-green" @click="showCook = true">🍳 Log Cook</button>
+          <button class="btn btn-sm btn-green" @click="showCook = true">Log Cook</button>
         </div>
       </div>
       <div class="photo-area">
-        <div style="font-size:2.5rem;opacity:0.25">🍽</div>
-        <div style="color:var(--text-faint);font-size:0.65rem;text-transform:uppercase;letter-spacing:1px;margin-top:4px">No photo</div>
+        <div class="photo-corner"></div>
+        <div class="photo-caption">No photo yet</div>
       </div>
       <div class="panel-scroll">
         <div class="meta-section">
@@ -98,12 +98,23 @@ async function onSaved() {
 .right-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 .panel-scroll { overflow-y: auto; flex: 1; }
 .photo-area {
-  height: 130px; background: #181818; border-bottom: 1px solid var(--border-dim);
+  height: 130px; background: var(--panel-alt); border-bottom: 1px dashed var(--border-dim);
   flex-shrink: 0; display: flex; align-items: center; justify-content: center; flex-direction: column;
-  background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255,255,255,0.015) 5px, rgba(255,255,255,0.015) 10px);
+  position: relative;
+}
+.photo-corner {
+  position: absolute; top: 0; right: 0;
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 0 22px 22px 0;
+  border-color: transparent var(--bg) transparent transparent;
+}
+.photo-caption {
+  font-family: 'Special Elite', monospace;
+  color: var(--text-faint); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px;
 }
 .meta-section { padding: 10px 12px; border-bottom: 1px solid var(--border-dim); }
-.recipe-name { font-size: 1.1rem; font-weight: 700; color: var(--text-bright); margin-bottom: 6px; }
+.recipe-name { font-size: 1.1rem; font-weight: 700; color: var(--text-bright); margin-bottom: 6px; font-family: 'Fraunces', serif; }
 .recipe-meta { display: flex; gap: 14px; flex-wrap: wrap; color: var(--text-dim); font-size: 0.78rem; }
 .recipe-meta b { color: var(--text); }
 

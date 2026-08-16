@@ -3,7 +3,7 @@
     <span :style="{ color: canCook ? 'var(--green)' : 'var(--red)', fontWeight: 600, fontSize: '0.82rem' }">
       {{ canCook ? '✔ All ingredients in stock' : `✘ Missing ${missingCount} ingredient(s)` }}
     </span>
-    <button class="btn btn-sm btn-green" @click="$emit('cook-clicked')" v-if="canCook">🍳 Log Cook</button>
+    <button class="btn btn-sm btn-green" @click="$emit('cook-clicked')" v-if="canCook">Log Cook</button>
   </div>
 </template>
 

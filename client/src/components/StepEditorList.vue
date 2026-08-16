@@ -55,7 +55,7 @@ function addSubstep(step) {
 <style scoped>
 .input { background: var(--bg-mid); border: 1px solid var(--border-dim); box-shadow: inset 1px 1px 0 rgba(0,0,0,0.3); color: var(--text); font-family: inherit; font-size: 0.88rem; padding: 7px 10px; width: 100%; }
 .steps-edit-list { display: flex; flex-direction: column; gap: 8px; }
-.step-edit-block { background: #1a1a1a; border: 1px solid var(--border-dim); padding: 8px; }
+.step-edit-block { background: var(--bg-mid); border: 1px solid var(--border-dim); padding: 8px; }
 .step-edit-row { display: flex; gap: 6px; align-items: center; margin-bottom: 5px; }
 .substep-edit-list { display: flex; flex-direction: column; gap: 4px; }
 .substep-edit-row { display: flex; gap: 4px; align-items: center; }

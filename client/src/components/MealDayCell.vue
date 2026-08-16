@@ -24,7 +24,7 @@ defineEmits(['open-picker'])
 </script>
 
 <style scoped>
-.day-cell { background: var(--panel); border: 1px solid var(--border-dim); box-shadow: var(--bevel-hi), var(--bevel-lo); border-radius: 2px; overflow: hidden; }
+.day-cell { background: var(--panel); border: 1px solid var(--border-dim); border-radius: 2px; overflow: hidden; }
 .day-header { background: var(--header-mid); border-bottom: 1px solid var(--border-dim); padding: 8px 12px; display: flex; align-items: center; gap: 10px; }
 .day-header.today { border-bottom-color: var(--green); }
 .day-name { color: var(--text-bright); font-size: 1rem; font-weight: 700; text-transform: uppercase; }

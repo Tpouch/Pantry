@@ -60,18 +60,18 @@ function toggleExpand(si) { localSteps.value[si].expanded = !localSteps.value[si
 .step-list { display: flex; flex-direction: column; }
 .progress-wrap { padding: 8px 12px; background: var(--panel-alt); border-bottom: 1px solid var(--border-dim); flex-shrink: 0; }
 .progress-label { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.72rem; color: var(--text-dim); }
-.progress-track { height: 7px; background: #111; border: 1px solid var(--border-dim); display: flex; gap: 2px; padding: 1px; }
+.progress-track { height: 7px; background: var(--bg-mid); border: 1px solid var(--border-dim); display: flex; gap: 2px; padding: 1px; }
 .progress-seg { flex: 1; background: transparent; }
 .progress-seg.filled { background: var(--accent); }
 
 .step-item { border-bottom: 1px solid var(--border-dim); }
 .step-item:nth-child(even) { background: var(--row-alt); }
-.step-item.active { background: #1e1e14; border-left: 2px solid var(--accent); }
+.step-item.active { background: var(--panel-alt); border-left: 2px solid var(--accent); }
 .step-main { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; }
 
 .step-check {
   width: 18px; height: 18px; border: 1px solid var(--border);
-  background: #111; box-shadow: inset 1px 1px 0 rgba(0,0,0,0.4);
+  background: var(--bg-mid); box-shadow: inset 1px 1px 0 rgba(0,0,0,0.4);
   flex-shrink: 0; margin-top: 2px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
 }
@@ -88,7 +88,7 @@ function toggleExpand(si) { localSteps.value[si].expanded = !localSteps.value[si
 .substep { display: flex; align-items: flex-start; gap: 8px; }
 .substep-check {
   width: 14px; height: 14px; border: 1px solid var(--border-dim);
-  background: #111; flex-shrink: 0; margin-top: 2px; cursor: pointer;
+  background: var(--bg-mid); flex-shrink: 0; margin-top: 2px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
 }
 .substep-check.checked { background: var(--green-bg); border-color: var(--green-border); }

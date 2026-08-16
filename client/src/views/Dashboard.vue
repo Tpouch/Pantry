@@ -2,7 +2,7 @@
   <div class="dashboard">
     <DashboardHudHeader :todayStr="todayStr" :systemStatus="systemStatus" :summary="data?.stats" />
 
-    <div class="stat-row panel" v-if="data">
+    <div class="stat-row" v-if="data">
       <StatBlock v-for="s in stats" :key="s.label" v-bind="s" />
     </div>
 
@@ -44,9 +44,7 @@
       </div>
     </div>
 
-    <div v-if="!data" class="loading-state">
-      <span class="led led-pulse"></span> INITIALIZING SYSTEMS...
-    </div>
+    <div v-if="!data" class="loading-state">Loading…</div>
   </div>
 </template>
 
@@ -73,12 +71,13 @@ function daysUntil(dateStr) {
 }
 
 const systemStatus = computed(() => {
-  if (!data.value) return { label: 'OFFLINE', cls: 'offline' }
+  if (!data.value) return { label: 'Offline', cls: 'offline' }
   const hasCritical = data.value.expiringIngredients.some(i => daysUntil(i.expiration_date) <= 3)
   const hasWarning = data.value.expiringIngredients.some(i => daysUntil(i.expiration_date) <= 7)
-  if (hasCritical) return { label: 'CRITICAL', cls: 'critical' }
-  if (hasWarning) return { label: 'WARNING', cls: 'warning' }
-  return { label: 'NOMINAL', cls: 'nominal' }
+  const expiringCount = data.value.expiringIngredients.length
+  if (hasCritical) return { label: `${expiringCount} expiring soon`, cls: 'critical' }
+  if (hasWarning) return { label: `${expiringCount} expiring soon`, cls: 'warning' }
+  return { label: 'Well stocked', cls: 'nominal' }
 })
 
 const stats = computed(() => {
@@ -88,9 +87,9 @@ const stats = computed(() => {
   const pctReady = s.totalRecipes > 0 ? (s.readyCount / s.totalRecipes) * 100 : 0
   return [
     { label: 'Ingredients', value: s.totalIngredients },
-    { label: 'Expiring', value: s.expiringCount, color: s.expiringCount > 0 ? 'var(--red)' : 'var(--green)', bar: pctExpiring, barColor: 'var(--red)' },
+    { label: 'Expiring', value: s.expiringCount, color: s.expiringCount > 0 ? 'var(--red-on-label)' : 'var(--green-on-label)', bar: pctExpiring, barColor: 'var(--red)' },
     { label: 'Recipes', value: s.totalRecipes },
-    { label: 'Ready to Cook', value: s.readyCount, color: s.readyCount > 0 ? 'var(--green)' : 'var(--text)', bar: pctReady, barColor: 'var(--green)' },
+    { label: 'Ready to Cook', value: s.readyCount, color: s.readyCount > 0 ? 'var(--green-on-label)' : 'var(--ink)', bar: pctReady, barColor: 'var(--green)' },
     { label: 'Total Cooks', value: s.totalCooks },
   ]
 })
@@ -105,18 +104,15 @@ function timeAgo(dateStr) {
 
 <style scoped>
 .dashboard { padding: 10px; display: flex; flex-direction: column; gap: 8px; height: 100%; overflow-y: auto; }
-.stat-row { display: flex; }
+.stat-row { display: flex; margin: 0 -6px; }
 .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.panel-note { font-family: 'Share Tech Mono', monospace; font-size: 0.68rem; color: var(--text-faint); letter-spacing: 1px; }
+.panel-note { font-family: 'Special Elite', monospace; font-size: 0.68rem; color: var(--text-faint); letter-spacing: 1px; }
 .recipes-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--border-dim); padding: 1px; }
-.loading-state { display: flex; align-items: center; gap: 10px; padding: 2rem; color: var(--text-faint); font-family: 'Share Tech Mono', monospace; font-size: 0.78rem; letter-spacing: 2px; }
-.led { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.led-pulse { background: var(--text-faint); animation: pulse-grey 1s ease-in-out infinite; }
+.loading-state { padding: 2rem; color: var(--text-faint); font-family: 'Special Elite', monospace; font-size: 0.85rem; }
 
 @media (max-width: 767px) {
   .stat-row { flex-wrap: wrap; }
   .row-2 { grid-template-columns: 1fr; }
   .recipes-grid { grid-template-columns: repeat(2, 1fr); }
 }
-@keyframes pulse-grey { 0%, 100% { opacity: 0.8; } 50% { opacity: 0.25; } }
 </style>

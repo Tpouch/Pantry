@@ -72,6 +72,14 @@ These principles apply to both the backend and the frontend.
 
 - Vue Router: any route that must be protected by the shared password should check auth state via a global `beforeEach` guard, not a repeated check in every view component.
 
+### Styling and theme
+
+`client/src/styles/theme.css` defines all CSS variables. The design is "Larder" — a warm pantry-ledger identity; see `DESIGN.md` for the full system (palette, type, the pantry-label signature motif, icon rules). In short:
+
+- `--accent: #c08a2e` (brass) is the app's one accent color — used for the active nav tab, focus rings, and primary buttons
+- `--green: #74923c` (sage) / `--red: #a8402f` (paprika) for stock/expiry status, with `--green-on-label` / `--red-on-label` darker variants for text placed on `--label` (cream) surfaces
+- Any self-contained piece of data (a stat, a recipe, an ingredient, the login form) uses the `.label-card` utility class rather than a new bespoke "card" style
+
 ---
 
 ## 4. Cybersecurity, priority on this project given the context (single secret + public exposure)
@@ -106,7 +114,7 @@ The password must never be stored or compared in plain text, even in `.env`. Thi
 
 ### 4.5 Dependencies and attack surface
 
-- Regular `npm audit`, fix critical/high vulnerabilities promptly.
+- Regular `pnpm audit`, fix critical/high vulnerabilities promptly.
 - Keep the number of dependencies limited, every added package is an additional attack surface (consistent with KISS).
 - Never expose a debug, introspection, or API documentation route (Swagger, etc.) in production without protection.
 

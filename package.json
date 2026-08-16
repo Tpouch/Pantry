@@ -2,13 +2,14 @@
   "name": "pantry",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "pnpm@10.30.1",
   "scripts": {
-    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev": "concurrently \"pnpm run dev:server\" \"pnpm run dev:client\"",
     "dev:server": "nodemon server/index.js",
-    "dev:client": "cd client && npm run dev",
-    "build": "cd client && npm run build",
+    "dev:client": "pnpm --dir client run dev",
+    "build": "pnpm --dir client run build",
     "start": "node server/index.js",
-    "test": "cd server && npm test"
+    "test": "pnpm --dir server run test"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",

@@ -1,54 +1,63 @@
 :root {
-  --bg: #111111;
-  --bg-mid: #1c1c1c;
-  --panel: #242424;
-  --panel-alt: #1e1e1e;
-  --header: #363636;
-  --header-mid: #2e2e2e;
-  --border: #555555;
-  --border-dim: #3a3a3a;
-  --text: #e0e0d8;
-  --text-dim: #9a9a90;
-  --text-faint: #4a4a44;
-  --accent: #e0a020;
-  --green: #5ab830;
-  --red: #c83020;
-  --bevel-hi: inset 1px 1px 0 #525252;
-  --bevel-lo: inset -1px -1px 0 #141414;
+  --bg: #2a2119;
+  --bg-mid: #241c15;
+  --panel: #3a2f26;
+  --panel-alt: #332921;
+  --header: #423527;
+  --header-mid: #332921;
+  --border: #6b5a44;
+  --border-dim: #4a3c2e;
+  --text: #ece0c8;
+  --text-dim: #b8a888;
+  --text-faint: #7a6a4e;
+  --accent: #c08a2e;
+  --green: #74923c;
+  --red: #a8402f;
+  --bevel-hi: inset 1px 1px 0 rgba(255,232,190,0.10);
+  --bevel-lo: inset -1px -1px 0 rgba(0,0,0,0.38);
   /* aliases for component compatibility */
-  --toolbar: #363636;
-  --text-muted: #9a9a90;
-  --text-bright: #e0e0d8;
-  --row-alt: rgba(255,255,255,0.025);
-  --row-hover: rgba(255,255,255,0.04);
-  --green-bg: #0c1a08;
-  --green-border: #3a7020;
-  --red-bg: #1e0c08;
-  --red-border: #883020;
-  --yellow: #e0a020;
-  --yellow-bg: #1e1808;
-  --yellow-border: #887020;
-  --border-dark: #3a3a3a;
-  --accent-dark: #a07010;
+  --toolbar: #423527;
+  --text-muted: #b8a888;
+  --text-bright: #ece0c8;
+  --row-alt: rgba(255,232,190,0.035);
+  --row-hover: rgba(255,232,190,0.06);
+  --green-bg: #1e2810;
+  --green-border: #4f6b28;
+  --red-bg: #2a1510;
+  --red-border: #7a2e21;
+  --yellow: #b8752f;
+  --yellow-bg: #2a1c0f;
+  --yellow-border: #7a4a1e;
+  --border-dark: #4a3c2e;
+  --accent-dark: #8a6522;
+  /* Larder additions: the pantry-label surface and its text-safe status colors */
+  --label: #f1e6cf;
+  --label-tab: #c9b98f;
+  --ink: #2a2119;
+  --green-on-label: #4f6b28;
+  --red-on-label: #7a2e21;
+  --text-faint-on-label: #6a5a3e;
+  --label-input: #fbf6ea;
+  --accent-hover: #d19a3c;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   background-color: var(--bg);
-  background-image: repeating-linear-gradient(
-    0deg, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 1px,
-    rgba(0,0,0,0.12) 1px, rgba(0,0,0,0.12) 2px
-  );
+  background-image: radial-gradient(rgba(0,0,0,0.14) 1px, transparent 1px);
+  background-size: 7px 7px;
   color: var(--text);
-  font-family: 'Titillium Web', 'Trebuchet MS', sans-serif;
+  font-family: 'Karla', 'Trebuchet MS', sans-serif;
   font-size: 15px;
   min-height: 100vh;
 }
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #111; }
-::-webkit-scrollbar-thumb { background: #444; border: 1px solid #333; }
+::-webkit-scrollbar-track { background: var(--bg-mid); }
+::-webkit-scrollbar-thumb { background: var(--border); border: 1px solid var(--border-dim); }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .btn {
   background: var(--panel);
@@ -65,19 +74,19 @@ body {
   .btn { min-height: 40px; }
   .btn-sm { min-height: 36px; font-size: 0.85rem; }
 }
-.btn:hover { background: #303030; color: var(--text); border-color: var(--border); }
+.btn:hover { background: var(--panel-alt); color: var(--text); border-color: var(--border); }
 .btn-sm { font-size: 0.82rem; padding: 0 12px; height: 28px; }
 .btn-active {
-  background: #303030;
+  background: var(--panel-alt);
   border-color: var(--border);
   color: var(--text);
   font-weight: 600;
   border-bottom: 2px solid var(--accent);
 }
 .btn-green { background: var(--green-bg); border-color: var(--green-border); color: var(--green); }
-.btn-green:hover { background: #162a10; border-color: var(--green-border); color: var(--green); }
+.btn-green:hover { background: #263612; border-color: var(--green-border); color: var(--green); }
 .btn-danger { background: var(--red-bg); border-color: var(--red-border); color: var(--red); }
-.btn-danger:hover { background: #2a100a; border-color: var(--red-border); color: var(--red); }
+.btn-danger:hover { background: #351a14; border-color: var(--red-border); color: var(--red); }
 
 .panel {
   background: var(--panel);
@@ -88,12 +97,13 @@ body {
   background: var(--header-mid);
   border-bottom: 1px solid var(--border-dim);
   padding: 6px 12px; font-weight: 700; font-size: 0.85rem; color: var(--text-bright);
+  font-family: 'Fraunces', serif;
   display: flex; align-items: center; justify-content: space-between; gap: 8px;
 }
 
 .trow {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 7px 12px; border-bottom: 1px solid var(--border-dim); font-size: 0.85rem;
+  padding: 7px 12px; border-bottom: 1px dashed var(--border-dim); font-size: 0.85rem;
 }
 .trow:nth-child(even) { background: var(--row-alt); }
 .trow:hover { background: var(--row-hover); }
@@ -102,7 +112,8 @@ body {
 
 .badge {
   font-size: 0.68rem; padding: 2px 7px;
-  font-weight: 600; letter-spacing: 0.5px; white-space: nowrap;
+  font-family: 'Special Elite', monospace;
+  font-weight: 400; letter-spacing: 0.5px; white-space: nowrap;
   border: 1px solid;
 }
 .badge-red { background: var(--red-bg); border-color: var(--red-border); color: var(--red); }
@@ -111,6 +122,31 @@ body {
 .badge-grey { background: var(--panel-alt); border-color: var(--border-dim); color: var(--text-dim); }
 
 .section-label {
-  padding: 4px 12px; background: var(--panel-alt); border-bottom: 1px solid var(--border-dim);
+  padding: 4px 12px; background: var(--panel-alt); border-bottom: 1px dashed var(--border-dim);
   font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint);
+  font-family: 'Special Elite', monospace;
+}
+
+/* Larder signature motif: a piece of data rendered as a label stuck to the page */
+.label-card {
+  background: var(--label);
+  color: var(--ink);
+  border-radius: 2px;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.28);
+  position: relative;
+  animation: label-place 0.25s ease-out;
+}
+.label-card::before {
+  content: '';
+  position: absolute; top: 0; left: 14px;
+  width: 26px; height: 8px;
+  background: var(--label-tab);
+  border-radius: 0 0 3px 3px;
+}
+@keyframes label-place {
+  from { transform: scale(0.96) translateY(2px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .label-card { animation: none; }
 }

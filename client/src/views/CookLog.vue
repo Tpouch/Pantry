@@ -13,7 +13,7 @@
         <div style="flex:3">
           <router-link :to="`/recipes/${entry.recipe_id}`" class="recipe-link">{{ entry.recipe_name }}</router-link>
         </div>
-        <div style="flex:1">{{ entry.cooked_at }}</div>
+        <div style="flex:1" class="log-date">{{ entry.cooked_at }}</div>
         <div style="flex:0 0 60px">
           <button class="btn btn-sm btn-danger" @click="confirmDelete(entry)">✕</button>
         </div>
@@ -45,6 +45,7 @@ async function confirmDelete(entry) {
 .header-row { background: var(--panel-alt); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); cursor: default !important; }
 .recipe-link { color: var(--text-bright); text-decoration: none; font-weight: 600; }
 .recipe-link:hover { color: var(--accent); }
+.log-date { font-family: 'Special Elite', monospace; font-size: 0.8rem; color: var(--text-dim); }
 
 @media (max-width: 767px) {
   .header-row { display: none; }

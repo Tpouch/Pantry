@@ -5,17 +5,19 @@ RUN apt-get update \
   && apt-get install -y --no-install-recommends python3 make g++ \
   && rm -rf /var/lib/apt/lists/*
 
-COPY package.json package-lock.json ./
-RUN npm ci
+RUN corepack enable && corepack prepare pnpm@10.30.1 --activate
 
-COPY client/package.json client/package-lock.json client/
-RUN cd client && npm ci
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+
+COPY client/package.json client/pnpm-lock.yaml client/
+RUN cd client && pnpm install --frozen-lockfile
 
 COPY client/ client/
-RUN cd client && npm run build
+RUN cd client && pnpm run build
 
-COPY server/package.json server/package-lock.json server/
-RUN cd server && npm install
+COPY server/package.json server/pnpm-lock.yaml server/
+RUN cd server && pnpm install --frozen-lockfile
 
 COPY server/ server/
 
