@@ -24,11 +24,10 @@ function findRecent(limit = 5) {
 
 function findNeeded() {
   return db.prepare(`
-    SELECT i.*, SUM(ri.quantity) as needed
+    SELECT i.*, SUM(ri.quantity) as needed, GROUP_CONCAT(DISTINCT ri.unit) as needed_units
     FROM recipe_ingredients ri
     JOIN ingredients i ON i.id = ri.ingredient_id
     GROUP BY i.id
-    ORDER BY i.name COLLATE NOCASE ASC
   `).all()
 }
 

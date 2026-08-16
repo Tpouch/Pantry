@@ -104,18 +104,62 @@ describe('GET /api/ingredients/needed', () => {
     expect(res.body[0].missing).toBe(3)
   })
 
-  it('sets missing to 0 when fully stocked, and sorts short items before fully-stocked ones', async () => {
+  it('sets missing to 0 when fully stocked, and sorts short items before fully-stocked ones, alphabetically within each group', async () => {
     const { lastInsertRowid: applesId } = db.prepare("INSERT INTO ingredients (name, quantity, unit) VALUES ('Apples', 10, 'pieces')").run()
+    const { lastInsertRowid: beansId } = db.prepare("INSERT INTO ingredients (name, quantity, unit) VALUES ('Beans', 0, 'pieces')").run()
     const { lastInsertRowid: zucchiniId } = db.prepare("INSERT INTO ingredients (name, quantity, unit) VALUES ('Zucchini', 0, 'pieces')").run()
     const { lastInsertRowid: recipeId } = db.prepare("INSERT INTO recipes (name, steps) VALUES ('Salad', '[]')").run()
     db.prepare("INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit) VALUES (?, ?, 4, 'pieces')").run(recipeId, applesId)
+    db.prepare("INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit) VALUES (?, ?, 1, 'pieces')").run(recipeId, beansId)
     db.prepare("INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit) VALUES (?, ?, 2, 'pieces')").run(recipeId, zucchiniId)
 
     const res = await request(app).get('/api/ingredients/needed')
-    expect(res.body).toHaveLength(2)
-    expect(res.body[0].name).toBe('Zucchini')
-    expect(res.body[0].missing).toBe(2)
-    expect(res.body[1].name).toBe('Apples')
-    expect(res.body[1].missing).toBe(0)
+    expect(res.body).toHaveLength(3)
+    expect(res.body[0].name).toBe('Beans')
+    expect(res.body[1].name).toBe('Zucchini')
+    expect(res.body[2].name).toBe('Apples')
+    expect(res.body[2].missing).toBe(0)
+  })
+
+  it('includes id and unit in each response item', async () => {
+    const { lastInsertRowid: ingId } = db.prepare("INSERT INTO ingredients (name, quantity, unit) VALUES ('Milk', 500, 'ml')").run()
+    const { lastInsertRowid: recipeId } = db.prepare("INSERT INTO recipes (name, steps) VALUES ('Pancakes', '[]')").run()
+    db.prepare("INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit) VALUES (?, ?, 300, 'ml')").run(recipeId, ingId)
+
+    const res = await request(app).get('/api/ingredients/needed')
+    expect(res.body[0].id).toBe(ingId)
+    expect(res.body[0].unit).toBe('ml')
+  })
+
+  it('excludes an ingredient that no recipe references, even when other recipes exist', async () => {
+    db.prepare("INSERT INTO ingredients (name, quantity, unit) VALUES ('Unused Spice', 50, 'g')").run()
+    const { lastInsertRowid: usedId } = db.prepare("INSERT INTO ingredients (name, quantity, unit) VALUES ('Used Spice', 50, 'g')").run()
+    const { lastInsertRowid: recipeId } = db.prepare("INSERT INTO recipes (name, steps) VALUES ('Curry', '[]')").run()
+    db.prepare("INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit) VALUES (?, ?, 10, 'g')").run(recipeId, usedId)
+
+    const res = await request(app).get('/api/ingredients/needed')
+    expect(res.body).toHaveLength(1)
+    expect(res.body[0].name).toBe('Used Spice')
+  })
+
+  it('flags needed_unit_mismatch when recipes request different units for the same ingredient', async () => {
+    const { lastInsertRowid: ingId } = db.prepare("INSERT INTO ingredients (name, quantity, unit) VALUES ('Butter', 2, 'kg')").run()
+    const { lastInsertRowid: r1 } = db.prepare("INSERT INTO recipes (name, steps) VALUES ('Cookies', '[]')").run()
+    const { lastInsertRowid: r2 } = db.prepare("INSERT INTO recipes (name, steps) VALUES ('Cake', '[]')").run()
+    db.prepare("INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit) VALUES (?, ?, 500, 'g')").run(r1, ingId)
+    db.prepare("INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit) VALUES (?, ?, 1, 'kg')").run(r2, ingId)
+
+    const res = await request(app).get('/api/ingredients/needed')
+    expect(res.body[0].needed_unit_mismatch).toBe(true)
+  })
+
+  it('does not flag needed_unit_mismatch when all recipes use the same unit', async () => {
+    const { lastInsertRowid: ingId } = db.prepare("INSERT INTO ingredients (name, quantity, unit) VALUES ('Sugar', 100, 'g')").run()
+    const { lastInsertRowid: recipeId } = db.prepare("INSERT INTO recipes (name, steps) VALUES ('Cake', '[]')").run()
+    db.prepare("INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit) VALUES (?, ?, 200, 'g')").run(recipeId, ingId)
+
+    const res = await request(app).get('/api/ingredients/needed')
+    expect(res.body[0].needed_unit_mismatch).toBe(false)
+    expect(res.body[0].needed_unit).toBe('g')
   })
 })

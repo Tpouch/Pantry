@@ -14,7 +14,16 @@ function getRecent(limit = 5) {
 
 function getNeededIngredients() {
   const rows = repo.findNeeded()
-  const withMissing = rows.map(r => ({ ...r, missing: Math.max(0, r.needed - r.quantity) }))
+  const withMissing = rows.map(r => {
+    const units = (r.needed_units || '').split(',').filter(Boolean)
+    const { needed_units, ...rest } = r
+    return {
+      ...rest,
+      missing: Math.max(0, r.needed - r.quantity),
+      needed_unit: units[0] || r.unit,
+      needed_unit_mismatch: units.length > 1
+    }
+  })
   withMissing.sort((a, b) => {
     const aShort = a.missing > 0 ? 0 : 1
     const bShort = b.missing > 0 ? 0 : 1

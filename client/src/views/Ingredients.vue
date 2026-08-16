@@ -24,7 +24,7 @@
         @edit="openEdit"
         @delete="confirmDelete"
       />
-      <div class="trow" v-if="!myIngredients.length" style="color:var(--text-muted)">No ingredients yet. Add some!</div>
+      <div class="trow" v-if="!myIngredients.length && !hiddenIngredients.length" style="color:var(--text-muted)">No ingredients yet. Add some!</div>
       <div class="trow hidden-note" v-if="hiddenIngredients.length">
         {{ hiddenIngredients.length }} ingredient{{ hiddenIngredients.length !== 1 ? 's' : '' }} hidden because you have none in stock ({{ hiddenIngredients.map(i => i.name).join(', ') }}) — see Shopping List.
       </div>
@@ -71,12 +71,14 @@ const editing = ref(null)
 onMounted(load)
 
 async function load() {
-  ingredients.value = await api.ingredients.list()
-  needed.value = await api.ingredients.needed()
+  const [ingredientsList, neededList] = await Promise.all([api.ingredients.list(), api.ingredients.needed()])
+  ingredients.value = ingredientsList
+  needed.value = neededList
 }
 
-const myIngredients = computed(() => ingredients.value.filter(i => i.quantity > 0))
-const hiddenIngredients = computed(() => ingredients.value.filter(i => i.quantity <= 0))
+const neededIds = computed(() => new Set(needed.value.map(n => n.id)))
+const myIngredients = computed(() => ingredients.value.filter(i => i.quantity > 0 || !neededIds.value.has(i.id)))
+const hiddenIngredients = computed(() => ingredients.value.filter(i => i.quantity <= 0 && neededIds.value.has(i.id)))
 
 function openAdd() {
   editing.value = null

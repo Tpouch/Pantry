@@ -4,10 +4,11 @@
       <span class="trow-name">{{ ingredient.name }}</span>
     </div>
     <div class="need-qty">
-      need <b>{{ ingredient.needed }} {{ ingredient.unit }}</b> — have <b>{{ ingredient.quantity }} {{ ingredient.unit }}</b>
+      need <b>{{ ingredient.needed }} {{ ingredient.needed_unit }}</b> — have <b>{{ ingredient.quantity }} {{ ingredient.unit }}</b>
     </div>
     <div class="need-action">
-      <template v-if="ingredient.missing > 0">
+      <span v-if="ingredient.needed_unit_mismatch" class="badge badge-yellow">⚠ mixed units — check manually</span>
+      <template v-else-if="ingredient.missing > 0">
         <input
           type="number"
           class="need-input"
@@ -25,7 +26,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 
-const props = defineProps({ ingredient: Object })
+const props = defineProps({ ingredient: { type: Object, required: true } })
 const emit = defineEmits(['add-stock'])
 
 const amount = ref(props.ingredient.missing)
