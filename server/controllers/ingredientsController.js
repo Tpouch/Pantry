@@ -4,6 +4,10 @@ function list(req, res) {
   res.json(service.listIngredients())
 }
 
+function listNeeded(req, res) {
+  res.json(service.getNeededIngredients())
+}
+
 function create(req, res) {
   try {
     res.status(201).json(service.createIngredient(req.body))
@@ -30,4 +34,4 @@ function remove(req, res) {
   }
 }
 
-module.exports = { list, create, update, remove }
+module.exports = { list, listNeeded, create, update, remove }

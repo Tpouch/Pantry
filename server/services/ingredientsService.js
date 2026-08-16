@@ -12,6 +12,18 @@ function getRecent(limit = 5) {
   return repo.findRecent(limit)
 }
 
+function getNeededIngredients() {
+  const rows = repo.findNeeded()
+  const withMissing = rows.map(r => ({ ...r, missing: Math.max(0, r.needed - r.quantity) }))
+  withMissing.sort((a, b) => {
+    const aShort = a.missing > 0 ? 0 : 1
+    const bShort = b.missing > 0 ? 0 : 1
+    if (aShort !== bShort) return aShort - bShort
+    return a.name.localeCompare(b.name)
+  })
+  return withMissing
+}
+
 function createIngredient(data) {
   if (!data.name || data.name.trim() === '') throw new Error('Name is required')
   if (data.quantity == null || isNaN(data.quantity)) throw new Error('Quantity must be a number')
@@ -38,4 +50,4 @@ function applyDeductions(deductions) {
   }
 }
 
-module.exports = { listIngredients, getExpiringSoon, getRecent, createIngredient, updateIngredient, deleteIngredient, applyDeductions }
+module.exports = { listIngredients, getExpiringSoon, getRecent, getNeededIngredients, createIngredient, updateIngredient, deleteIngredient, applyDeductions }
